@@ -9,32 +9,89 @@ def datef(date):
 
 def days_until(date_target):
     date_current = datetime.datetime.now()
-    return (date_target - date_current).days
+    return (date_target - date_current).days + 1
 
 
 def announce_days_until(date_target, message):
-    print(f"There are {days_until(date_target)} "
-          f"days until {datef(date_target)}, "
-          f"{message}")
+    days = days_until(date_target)
+    if days == 1:  # singular
+        are_is = "is"
+        days_day = "day"
+    else:  # plural
+        are_is = "are"
+        days_day = "days"
+
+    if message:
+        print(f"There {are_is} {days} "
+              f"{days_day} until {datef(date_target)}, "
+              f"{message}")
+    else:
+        print(f"There {are_is} {days} "
+              f"{days_day} until {datef(date_target)}.")
+
+
+def int_input(prompt):
+    try:
+        return int(input(prompt))
+    except:
+        print("Error: Expected an integer. Enter a valid number.")
+        return int_input(prompt)
+
+
+def get_date_part(part, future):
+    date_current = datetime.datetime.now()
+
+    if part == "year":
+        date_part = int_input("Year (YYYY): ")
+        if future:
+            while date_part < date_current.year:
+                print(f"Error: Date must be in the future. Enter {date_current.year} or later.")
+                date_part = int_input("Year (YYYY): ")
+
+    elif part == "month":
+        date_part = int_input(" Month (MM): ")
+        if future:
+            while date_part < date_current.month:
+                print(f"Error: Date must be in the future. Enter {date_current.month} or later.")
+                date_part = int_input(" Month (MM): ")
+
+    elif part == "day":
+        date_part = int_input("   Day (DD): ")
+        if future:
+            while date_part < date_current.day:
+                print(f"Error: Date must be in the future. Enter {date_current.day} or later.")
+                date_part = int_input("   Day (DD): ")
+
+    return date_part
 
 
 def get_user_date():
-    year = int(input(
-        "Year (YYYY): "))
-    month = int(input(
-        " Month (MM): "))
-    day = int(input(
-        "   Day (DD): "))
-    user_date = datetime.datetime(year, month, day)
-    announce_days_until(user_date, None)
+    date_current = datetime.datetime.now()
+
+    year = get_date_part("year", True)
+
+    if year == date_current.year:
+        month = get_date_part("month", True)
+    else:
+        month = get_date_part("month", False)
+
+    if (year == date_current.year) and (month == date_current.month):
+        day = get_date_part("day", True)
+    else:
+        day = get_date_part("day", False)
+
+    return datetime.datetime(year, month, day)
+
+
+###
 
 
 date_shona_30 = datetime.datetime(2026, 11, 12)  # Shona's 30th birthday
 announce_days_until(date_shona_30, "Shona's 30th birthday, when she will explode.")
 
 while True:
-    response = input("Check days until a different date? (y/n): ")
+    response = input("Check days until a different future date? (y/n): ")
     if response == "y":
-        get_user_date()
+        announce_days_until(get_user_date(), None)
     elif response == "n":
         sys.exit(0)
