@@ -14,20 +14,25 @@ def days_until(date_target):
 
 def announce_days_until(date_target, message):
     days = days_until(date_target)
-    if days == 1:  # singular
-        are_is = "is"
-        days_day = "day"
-    else:  # plural
-        are_is = "are"
-        days_day = "days"
 
+    if days < -1:
+        announcement = f"{datef(date_target)} was {days} days ago"
+    elif days == -1:
+        announcement = f"{datef(date_target)} was yesterday"
+    elif days == 0:
+        announcement = f"{datef(date_target)} is today"
+    elif days == 1:
+        announcement = f"There's one day until {datef(date_target)}"
+    elif days > 1:
+        announcement = f"There are {days} days until {datef(date_target)}"
+
+    # TODO function to select random message
     if message:
-        print(f"There {are_is} {days} "
-              f"{days_day} until {datef(date_target)}, "
-              f"{message}")
+        announcement += f", {message}"
     else:
-        print(f"There {are_is} {days} "
-              f"{days_day} until {datef(date_target)}.")
+        announcement += "."
+
+    print(announcement)
 
 
 def int_input(prompt):
@@ -43,13 +48,14 @@ def get_date_part(part, future):
 
     if part == "year":
         date_part = int_input("Year (YYYY): ")
-        if future:
+        if future:  # TODO refactor into future date part function
             while date_part < date_current.year:
                 print(f"Error: Date must be in the future. Enter {date_current.year} or later.")
                 date_part = int_input("Year (YYYY): ")
 
     elif part == "month":
         date_part = int_input(" Month (MM): ")
+        # TODO valid month check
         if future:
             while date_part < date_current.month:
                 print(f"Error: Date must be in the future. Enter {date_current.month} or later.")
@@ -57,6 +63,7 @@ def get_date_part(part, future):
 
     elif part == "day":
         date_part = int_input("   Day (DD): ")
+        # TODO valid day check
         if future:
             while date_part < date_current.day:
                 print(f"Error: Date must be in the future. Enter {date_current.day} or later.")
@@ -65,7 +72,7 @@ def get_date_part(part, future):
     return date_part
 
 
-def get_user_date():
+def get_user_date():  # TODO allow user dates in the past
     date_current = datetime.datetime.now()
 
     year = get_date_part("year", True)
