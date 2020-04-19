@@ -40,23 +40,32 @@ def int_input(prompt, min, max):
         user_input = int(input(prompt))
         if user_input < min:
             print(f"Error: Input below minimum value. Enter a number {min} or higher.")
-            return int_input(prompt)
+            return int_input(prompt, min, max)
         if user_input > max:
             print(f"Error: Input above maximum value. Enter a number {max} or lower.")
-            return int_input(prompt)
+            return int_input(prompt, min, max)
         return user_input
     except:
         print("Error: Expected an integer. Enter a valid number.")
-        return int_input(prompt)
+        return int_input(prompt, min, max)
 
 
 def get_user_date():
     year = int_input(
-        "Year (YYYY): ", 1970, 3000)
+        "Year (YYYY): ",
+        1970,
+        3000
+    )
     month = int_input(
-        " Month (MM): ", 1, 12)
+        " Month (MM): ",
+        1,
+        12
+    )
     day = int_input(
-        "   Day (DD): ", 1, monthrange(year, month)[1])
+        "   Day (DD): ",
+        1,
+        monthrange(year, month)[1]  # days in the month on a specific year
+    )
 
     return datetime.datetime(year, month, day)
 
